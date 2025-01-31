@@ -1,0 +1,13 @@
+bootargs_sdcard=root=/dev/mmcblk1p2 rw rootwait ip=EMB_DEV_IPADDR:::::eth0
+bootargs_nfs=root=/dev/nfs ip=EMB_DEV_IPADDR:::::eth0 nfsroot=EMB_DEV_HOSTIP:EMB_DEV_NFSROOT,nfsvers=3,tcp rw
+bootargs=root=/dev/nfs ip=EMB_DEV_IPADDR:::::eth0 nfsroot=EMB_DEV_HOSTIP:EMB_DEV_NFSROOT,nfsvers=3,tcp rw
+bootcmd_sdcard=env set bootargs $bootargs_sdcard; run set_led_state_start_load; ext4load mmc 1:2 EMB_DEV_KERNEL_ADDR /boot/Image; ext4load mmc 1:2 EMB_DEV_DTB_ADDR /boot/EMB_DEV_DTB; if test $? -eq 0; then booti EMB_DEV_KERNEL_ADDR - EMB_DEV_DTB_ADDR; else run set_led_state_fail_load; fi
+bootcmd_tftp=env set bootargs $bootargs_nfs; run set_led_state_start_load; tftpboot EMB_DEV_KERNEL_ADDR Image; tftpboot EMB_DEV_DTB_ADDR EMB_DEV_DTB; if test $? -eq 0; then booti EMB_DEV_KERNEL_ADDR - EMB_DEV_DTB_ADDR; else run set_led_state_fail_load; fi
+bootcmd=run bootcmd_tftp
+bootmenu_0=tftp boot=run bootcmd_tftp
+bootmenu_1=sd card boot=run bootcmd_sdcard
+bootmenu_2=swap default= env set temp $bootmenu_0; env set bootmenu_0 $bootmenu_1; env set bootmenu_1 $temp; env save
+ipaddr=EMB_DEV_IPADDR
+serverip=EMB_DEV_HOSTIP
+set_led_state_start_load=led led-0 on; led led-1 off; led led-2 on; led led-3 off; led led-4 on
+set_led_state_fail_load=led led-0 off; led led-1 on; led led-2 off; led led-3 on; led led-4 off
