@@ -10,7 +10,7 @@ require recipes-kernel/linux/linux-beagleyai.inc
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git;protocol=git;branch=linux-6.12.y \
            file://defconfig \
-           file://debug.cfg"
+           file://debug.cfg "
 
 SRCREV="${AUTOREV}"
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
